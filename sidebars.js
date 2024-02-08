@@ -74,6 +74,7 @@ module.exports = {
             'developer_guide/deployment',
             'developer_guide/openshift_development',
             'developer_guide/translation',
+            'developer_guide/scheduler_object_states',
             {
                 type: 'category',
                 label: 'Designs',
@@ -93,7 +94,6 @@ module.exports = {
                     'design/priority_scheduling',
                     'design/resilience',
                     'design/state_aware_scheduling',
-                    'design/scheduler_object_states',
                     'design/config_v2',
                     'design/scheduler_configuration',
                 ]
@@ -113,6 +113,7 @@ module.exports = {
         ],
         'Performance': [
             'performance/evaluate_perf_function_with_kubemark',
+            'performance/evaluate_perf_function_with_kwok',
             'performance/performance_tutorial',
             'performance/metrics',
             'performance/profiling'

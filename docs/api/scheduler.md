@@ -1378,6 +1378,138 @@ Node details include host and rack name, capacity, resources, utilization, and a
 }
 ```
 
+## Node utilization
+
+Show how every node is distributed with regard to dominant resource utilization.
+
+**Status** : Deprecated since v1.5.0 and will be removed in the next major release. Replaced with `/ws/v1/scheduler/node-utilizations`.
+
+**URL** : `/ws/v1/scheduler/node-utilization`
+
+**Method** : `GET`
+
+**Auth required** : NO
+
+### Success response
+
+**Code** : `200 OK`
+
+**Content examples**
+
+```json
+{
+    "type": "vcore",
+    "utilization": [
+      {
+        "bucketName": "0-10%",
+        "numOfNodes": 1,
+        "nodeNames": [
+          "aethergpu"
+        ]
+      },
+      {
+        "bucketName": "10-20%",
+        "numOfNodes": 2,
+        "nodeNames": [
+            "primary-node",
+            "second-node"
+        ]
+      },
+      ...  
+    ]
+}
+```
+
+### Error response
+
+**Code** : `500 Internal Server Error`
+
+**Content examples**
+
+```json
+{
+    "status_code": 500,
+    "message": "system error message. for example, json: invalid UTF-8 in string: ..",
+    "description": "system error message. for example, json: invalid UTF-8 in string: .."
+}
+```
+
+## Node utilizations
+
+Show the nodes utilization of different types of resources in a cluster.
+
+**URL** : `/ws/v1/scheduler/node-utilizations`
+
+**Method** : `GET`
+
+**Auth required** : NO
+
+### Success response
+
+**Code** : `200 OK`
+
+**Content examples**
+
+```json
+[
+    {
+        "clusterId": "mycluster",
+        "partition": "default",
+        "utilizations": [
+            {
+                "type": "pods",
+                "utilization": [
+                    {
+                        "bucketName": "0-10%",
+                        "numOfNodes": 2,
+                        "nodeNames": [
+                            "primary-node",
+                            "second-node"
+                        ]
+                    },
+                    {
+                        "bucketName": "10-20%"
+                    },
+                    ...
+                ]
+            },
+            {
+                "type": "vcores",
+                "utilization": [
+                    {
+                        "bucketName": "0-10%",
+                        "numOfNodes": 2,
+                        "nodeNames": [
+                            "primary-node",
+                            "second-node"
+                        ]
+                    },
+                    {
+                        "bucketName": "10-20%"
+                    },
+                    ...
+                ]
+            },
+            ...
+        ]
+    }
+]
+```
+
+### Error response
+
+**Code** : `500 Internal Server Error`
+
+**Content examples**
+
+```json
+{
+    "status_code": 500,
+    "message": "system error message. for example, json: invalid UTF-8 in string: ..",
+    "description": "system error message. for example, json: invalid UTF-8 in string: .."
+}
+```
+
 ## Goroutines info
 
 Dumps the stack traces of the currently running goroutines.
@@ -1912,3 +2044,74 @@ None
 ### Error response
 
 **Code**: `400 Bad Request`
+
+
+## Batch Events
+
+Endpoint is used to retrieve a batch of event records.
+
+**URL**: `/ws/v1/events/batch`
+
+**METHOD** : `GET`
+
+**Auth required** : NO
+
+**URL query parameters** :
+- `count` (optional) : Specifies the maxmem number of events to be included in the response.
+- `start` (optional) : Specifies the starting ID for retrieving events. If the specified ID is outside the ring buffer 
+(too low or too high), the response will include the lowest and highest ID values with `EventRecords` being empty. 
+
+
+### Success response
+
+**Code**: `200 OK`
+
+**Content examples**
+
+```json
+{
+  "InstanceUUID": "400046c6-2180-41a2-9be1-1c251ab2c498",
+  "LowestID": 0,
+  "HighestID": 7,
+  "EventRecords": [
+    {
+      "type": 3,
+      "objectID": "yk8s-worker",
+      "message": "schedulable: true",
+      "timestampNano": 1701347180239597300,
+      "eventChangeType": 1,
+      "eventChangeDetail": 302,
+      "resource": {}
+    },
+    {
+      "type": 3,
+      "objectID": "yk8s-worker",
+      "message": "Node added to the scheduler",
+      "timestampNano": 1701347180239650600,
+      "eventChangeType": 2,
+      "resource": {
+        "resources": {
+          "ephemeral-storage": {
+            "value": 502921060352
+          },
+          "hugepages-1Gi": {},
+          "hugepages-2Mi": {},
+          "memory": {
+            "value": 33424998400
+          },
+          "pods": {
+            "value": 110
+          },
+          "vcore": {
+            "value": 8000
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### Error response
+
+**Code** : `500 Internal Server Error`
